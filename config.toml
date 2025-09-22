@@ -1,0 +1,22 @@
+[config]
+transactions = 1000
+account = "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+commitment = "processed"
+
+[[endpoint]]
+name = "grpc1"
+url = "http://grpc1:80"
+x_token = ""
+kind = "yellowstone"
+
+[[endpoint]]
+name = "grpc2"
+url = "https://grpc2:10000"
+x_token = "3f6bf9f7-0851-4f9b-9750-0979a10affbf"
+kind = "yellowstone"
+
+[[endpoint]]
+name = "grpc3"
+url = "http://grpc2:25565"
+x_token = ""
+kind = "yellowstone"
