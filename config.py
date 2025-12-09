@@ -31,9 +31,10 @@ def load_or_create(path: str) -> ConfigToml:
     endpoints = data.get("endpoint", [])
 
     config = Config(
-        transactions=int(cfg.get("transactions", 1000)),
-        account=str(cfg.get("account", "")),
+        transactions=int(cfg.get("transactions", 5000)),
+        account=str(cfg.get("account", "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA")),
         commitment=str(cfg.get("commitment", "processed")),
     )
+    
     eps = [Endpoint(**e) for e in endpoints]
     return ConfigToml(config=config, endpoint=eps)

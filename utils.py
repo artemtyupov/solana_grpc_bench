@@ -24,7 +24,16 @@ class Comparator:
 
     def get_all_seen_count(self) -> int:
         # "complete" means seen by all workers
-        return sum(1 for m in self.data.values() if len(m) >= self.worker_count)
+        return sum(1 for m in self.data.values() if len(m) == self.worker_count)
+    
+    def erase_not_pairs(self) -> None:
+        to_erase = set()
+        for signature, ddict in self.data.items():
+            if len(ddict) != self.worker_count:
+                to_erase.add(signature)
+
+        for sign in to_erase:
+            self.data.pop(sign)
 
 def get_current_timestamp() -> float:
     return time.time()

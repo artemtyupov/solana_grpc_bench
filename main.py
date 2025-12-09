@@ -33,7 +33,7 @@ async def run_async(config_path: str):
             config=cfg.config,
             shutdown_event=shutdown_event,
             start_time=start_time,
-            comparator=comparator,
+            comparator=comparator
         )
         tasks.append(asyncio.create_task(prov.run(ctx)))
 

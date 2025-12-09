@@ -3,6 +3,7 @@ from collections import defaultdict
 from utils import percentile
 
 def analyze_delays(comparator, endpoint_names):
+    comparator.erase_not_pairs()
     all_signatures = comparator.data
     endpoint_stats = {name: {"first":0, "total":0, "delays":[], "historical":0} for name in endpoint_names}
 

@@ -48,17 +48,12 @@ class GeyserClient(BaseProvider):
         self.queue_responses = asyncio.Queue()
         self._outgoing_requests = asyncio.Queue()
 
-        await self.update_subscription(["pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA", 
-                                        "CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C", 
-                                        "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8",
-                                        "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
-                                        "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo",
-                                        "cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG"])
+        await self.update_subscription(["pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"])
         asyncio.create_task(self.subscribe())
         await asyncio.sleep(2)
         async for message in self.responses():
             try:
-                raw_sig = message.account.account.txn_signature
+                raw_sig = message.transaction.transaction.signature
                 sig = None
                 if len(raw_sig) == 64:
                     sig = raw_sig
@@ -76,7 +71,8 @@ class GeyserClient(BaseProvider):
                         TransactionData(timestamp=ts, signature=signature, start_time=ctx.start_time),
                     )
                 
-                print(_comparator.get_all_seen_count())
+                if int(_comparator.get_all_seen_count()) % 100 == 0:
+                    print(f"{ctx.endpoint.name} : {_comparator.get_all_seen_count()}")
                 if _comparator.get_all_seen_count() >= _cfg.transactions:
                     ctx.shutdown_event.set()
                     break
@@ -90,11 +86,10 @@ class GeyserClient(BaseProvider):
 
     async def update_subscription(self, accounts: list[str]):
         req = geyser_pb2.SubscribeRequest()
-        req.accounts['benchmark'].account.extend(accounts)
-        data_slice = geyser_pb2.SubscribeRequestAccountsDataSlice(offset=64, length=8)
-        req.accounts_data_slice.append(data_slice)
+        req.transactions['benchmark_transactions'].account_include.extend(accounts)
+        req.transactions['benchmark_transactions'].vote = False
+        req.transactions['benchmark_transactions'].failed = False
         req.commitment = geyser_pb2.CommitmentLevel.PROCESSED
-        req.accounts['benchmark'].nonempty_txn_signature = True
         await self._outgoing_requests.put(req)
 
     async def subscribe(
